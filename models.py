@@ -7,5 +7,4 @@ class User(Base):
     name = Column(String)
     email = Column(String, unique=True, index=True)
     password = Column(String)
-    role = Column(String, nullable=True)
-    
+    phonenumber = Column(String(10))

@@ -11,27 +11,27 @@ router = APIRouter()
 
 @router.post("/signup")
 def signup(user: UserSchema, db: Session = Depends(get_db)):
+    print(user.model_dump())  # or print(user.dict()) if using Pydantic v1
+
     repo = UserRepo(db)
 
     existing_user = repo.get_user_by_email(user.email)
 
     if existing_user:
-        raise HTTPException(
-            status_code=400,
-            detail="User already exists"
-        )
+        raise HTTPException(status_code=400, detail="User already exists")
 
     new_user = User(
-        name = user.name,
+        name=user.name,
         email=user.email,
-        password=user.password
+        password=user.password,
+        phonenumber=user.phonenumber
     )
+
+    print(new_user.name)  # Add this
 
     repo.create_user(new_user)
 
-    return {
-        "message": "User created successfully"
-    }
+    return {"message": "User created successfully"}
 
 
 @router.post("/login")
