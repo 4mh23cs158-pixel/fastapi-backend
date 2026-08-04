@@ -22,6 +22,7 @@ def signup(user: UserSchema, db: Session = Depends(get_db)):
         )
 
     new_user = User(
+        name = user.name,
         email=user.email,
         password=user.password
     )
