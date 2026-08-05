@@ -1,3 +1,4 @@
+import json
 import os
 
 from dotenv import load_dotenv
@@ -13,11 +14,18 @@ client = genai.Client(
 
 
 def generate_story(data):
+
     prompt = build_story_prompt(data)
 
     response = client.models.generate_content(
-        model="gemini-3.5-flash",
+        model="gemini-3.6-flash",
         contents=prompt
     )
 
-    return response.text
+    text = response.text.strip()
+
+    text = text.replace("```json", "")
+
+    text = text.replace("```", "")
+
+    return json.loads(text)

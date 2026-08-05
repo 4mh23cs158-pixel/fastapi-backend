@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models import Story
+from models import Story, StoryScene
 
 
 class StoryRepo:
@@ -12,6 +12,11 @@ class StoryRepo:
         self.db.commit()
         self.db.refresh(story)
         return story
+    def create_scene(self, scene: StoryScene):
+        self.db.add(scene)
+        self.db.commit()
+        self.db.refresh(scene)
+        return scene
 
     def get_story_by_id(self, story_id: int):
         return self.db.query(Story).filter(

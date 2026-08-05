@@ -79,8 +79,45 @@ class Story(Base):
     )
 
     last_opened = Column(DateTime(timezone=True))
+    
+    scenes = relationship(
+        "StoryScene",
+        back_populates="story",
+        cascade="all, delete"
+    )
 
     owner = relationship(
         "User",
         back_populates="stories"
     )
+
+class StoryScene(Base):
+
+    __tablename__ = "story_scenes"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    story_id = Column(
+        Integer,
+        ForeignKey("stories.id", ondelete="CASCADE")
+    )
+
+    scene_number = Column(Integer)
+
+    scene_title = Column(String)
+
+    scene_text = Column(Text)
+
+    image_prompt = Column(Text)
+
+    image_path = Column(Text)
+
+    created_at = Column(
+        DateTime(timezone=True),
+        server_default=func.now()
+    )
+
+    story = relationship(
+        "Story",
+        back_populates="scenes"
+    ) 

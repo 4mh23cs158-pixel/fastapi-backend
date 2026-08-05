@@ -1,7 +1,9 @@
 def build_story_prompt(data):
 
     return f"""
-Write a beautiful children's story.
+You are an expert children's story writer.
+
+Generate an original children's story.
 
 Title:
 {data.title}
@@ -33,13 +35,68 @@ Art Style:
 Moral:
 {data.moral}
 
-Requirements:
+----------------------------------------
 
-1. Give the story a proper title.
-2. Include dialogues.
-3. Make the story interesting.
-4. Add emotions.
-5. Include a beginning, middle and ending.
-6. End with the moral.
-7. Return ONLY the story text.
+Return ONLY valid JSON.
+
+Do NOT return markdown.
+
+Do NOT use ```json.
+
+Format:
+
+{{
+"title":"",
+
+"story":"",
+
+"scenes":[
+
+{{
+"scene_number":1,
+
+"scene_title":"",
+
+"scene_text":"",
+
+"image_prompt":""
+}}
+
+]
+
+}}
+
+Rules:
+
+1. Story should have beginning, middle and ending.
+
+2. Story should contain dialogues.
+
+3. Story should be emotional.
+
+4. Divide story into 4 scenes.
+
+5. scene_text should summarize only that scene.
+
+6. image_prompt must describe ONLY that scene.
+
+7. image_prompt must include:
+
+• character appearance
+
+• clothes
+
+• facial expressions
+
+• environment
+
+• lighting
+
+• colors
+
+• Pixar style
+
+• children's storybook illustration
+
+Return ONLY JSON.
 """
