@@ -42,6 +42,7 @@ def create_story(
     story_data = generate_story(story)
 
     story_text = story_data["story"]
+    print("Received user id:", story.user_id)
 
 
     new_story = Story(
