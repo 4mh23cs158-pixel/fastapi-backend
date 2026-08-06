@@ -19,5 +19,10 @@ dist/
 
 *.log
 
+# Generated static images & local databases
+generated_images/
+*.db
+*.sqlite3
+
 .DS_Store
 Thumbs.db

@@ -18,7 +18,7 @@ class StoryBase(BaseModel):
     last_opened: Optional[datetime] = None
 
 class StoryCreate(BaseModel):
-
+    user_id: int
     title: str
 
     description: Optional[str] = None

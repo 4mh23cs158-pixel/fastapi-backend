@@ -53,8 +53,11 @@ def login(credentials: UserLogin, db: Session = Depends(get_db)):
         )
 
     return {
-        "message": "Login successful"
-    }
+    "message":"Login successful",
+    "user_id": user.id,
+    "name": user.name,
+    "email": user.email
+}
 
 
 @router.get("/users")

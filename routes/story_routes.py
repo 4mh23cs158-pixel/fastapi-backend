@@ -1,8 +1,12 @@
-from fastapi import APIRouter, Depends
+from typing import Optional
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from db import get_db
 from models import Story, StoryScene
+from models import User
+from repositories.user_repo import UserRepo
+
 
 from repositories.story_repo import StoryRepo
 from schemas.story_schemas import StoryCreate
@@ -23,13 +27,25 @@ def create_story(
 ):
 
     # Generate Story + Scenes
+    # Check whether the user exists
+    user_repo = UserRepo(db)
+
+    user = user_repo.get_user_by_id(story.user_id)
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    # Generate Story + Scenes
     story_data = generate_story(story)
 
     story_text = story_data["story"]
 
-    # Create Story
+
     new_story = Story(
-        user_id=1,
+        user_id=story.user_id,
         title=story_data["title"],
         description=story.description,
         theme=story.theme,
@@ -145,3 +161,62 @@ def generate_test_image():
     return {
         "image": image
     }
+
+
+@router.get("/user/{user_id}")
+def get_user_stories(
+    user_id: int,
+    db: Session = Depends(get_db)
+):
+
+    user_repo = UserRepo(db)
+
+    user = user_repo.get_user_by_id(user_id)
+
+    if not user:
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
+
+    repo = StoryRepo(db)
+
+    stories = repo.get_user_stories(user_id)
+
+    result = []
+    for s in stories:
+        result.append({
+            "story_id": s.id,
+            "title": s.title,
+            "description": s.description,
+            "theme": s.theme,
+            "genre": s.genre,
+            "language": s.language,
+            "age_group": s.age_group,
+            "art_style": s.art_style,
+            "moral": s.moral,
+            "character_name": s.character_name,
+            "character_type": s.character_type,
+            "cover_image": s.cover_image,
+            "created_at": str(s.created_at) if s.created_at else None,
+            "scene_count": len(s.scenes) if s.scenes else 0
+        })
+
+    return result
+
+
+@router.delete("/{story_id}")
+def delete_story(story_id: int, db: Session = Depends(get_db)):
+    repo = StoryRepo(db)
+    story = repo.get_story_by_id(story_id)
+
+    if not story:
+        raise HTTPException(
+            status_code=404,
+            detail="Story not found"
+        )
+
+    repo.delete_story(story_id)
+    
+    return {"message": "Story deleted successfully"}
+
